@@ -3,11 +3,22 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet"
+          asp-href-include="~/lib/bootstrap/dist/**/*.min.css"
+          asp-href-exclude="**/*-reboot*,**/*-grid*" />
     <title>Sports Store</title>
 </head>
 <body>
-    <div>
-        @RenderBody()
+    <div class="navbar bg-dark" role="navigation">
+        <a class="navbar-brand mb-0 h1" href="#">SPORTS STORE</a>
+    </div>
+    <div class="row">
+        <div id="cateories" class="col-3">
+            Hello World
+        </div>
+        <div class="col-9">
+            @RenderBody()
+        </div>
     </div>
 </body>
 </html>
