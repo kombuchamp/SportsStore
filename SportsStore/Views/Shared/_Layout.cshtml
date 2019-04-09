@@ -12,9 +12,9 @@
     <div class="navbar bg-dark" role="navigation">
         <a class="navbar-brand mb-0 h1 text-white" href="#">SPORTS STORE</a>
     </div>
-    <div class="row">
+    <div class="row m-1 p-1">
         <div id="cateories" class="col-3">
-            Hello World
+            @await Component.InvokeAsync("NavigationMenu")
         </div>
         <div class="col-9">
             @RenderBody()
