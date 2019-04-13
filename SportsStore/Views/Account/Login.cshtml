@@ -6,7 +6,7 @@
 }
 
 <div class="text-danger" asp-validation-summary="All"></div>
-<form asp-action="Login" asp-controller="Account" method="post">
+<form class="col-4 card p-2" asp-action="Login" asp-controller="Account" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
     <div class="form-group">
         <label asp-for="Name"></label>

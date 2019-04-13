@@ -53,10 +53,16 @@ namespace SportsStore
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
+
+                routes.MapRoute(
+                    name: null,
+                    template: "Admin",
+                    defaults: new { controller = "Admin", action = "Index" });
+
                 routes.MapRoute(
                     name: null,
                     template: "{category}/Page{productPage:int}",
-                    defaults: new {Controller = "Product", action = "List"}
+                    defaults: new { Controller = "Product", action = "List" }
                     );
 
                 routes.MapRoute(
@@ -80,6 +86,7 @@ namespace SportsStore
                         name: null,
                         template: "{controller}/{action}/{id?}"
                     );
+
             });
             SeedData.EnsurePopulated(app);
             IdentitySeedData.EnsurePopulated(app);

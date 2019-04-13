@@ -4,19 +4,14 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" asp-href-include="~/lib/bootstrap/dist/**/*.min.css" />
     <title>@ViewBag.Title</title>
-    <style>
-        .input-validation-error {
-            border-color: red;
-            background-color: #fee;
-        }
-    </style>
 </head>
 <body class="m-1 p-1">
-    <div class="bg-info p-2 row">
-        <div class="col">
+    <div class="bg-secondary p-2 row">
+        <div class="col text-white">
             <h4>@ViewBag.Title</h4>
         </div>
         <div class="col-2">
+            
             <a class="btn btn-sm btn-primary" asp-action="Logout" asp-controller="Account">
                 Log Out
             </a>
@@ -26,6 +21,18 @@
     {
         <div class="alert alert-success">@TempData["message"]</div>
     }
-    @RenderBody()
+    <div class="row m-1 p-1">
+        <div id="cateories" class="col-3">
+            <a class="btn btn-block btn-primary" asp-action="Index" asp-controller="Admin">
+                Manage products
+            </a>
+            <a class="btn btn-block btn-primary" asp-action="List" asp-controller="Order">
+                Manage shipping
+            </a>
+        </div>
+        <div class="col-9">
+            @RenderBody()
+        </div>
+    </div>
 </body>
 </html>
