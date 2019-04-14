@@ -8,3 +8,11 @@ It has following features:
 * User cart
 
 It is implemented with help of Adam Friman's ["Pro ASP.NET Core MVC 2"](https://www.apress.com/us/book/9781484231494) book and built using asp.net core 2 for backend and bootstrap for frontend. SQL Server is used to store product and identity data, Entity Framework Core manages it.
+
+## How to run
+To run this application you need dotnet core and SQL Server installed.
+To perform database migration, run:
+~~~~
+dotnet ef database update --context ApplicationDbContext
+dotnet ef database update --context AppIdentityDbContext
+~~~~

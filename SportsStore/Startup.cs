@@ -45,9 +45,13 @@ namespace SportsStore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseStatusCodePages();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
             }
 
-            app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseSession();
             app.UseAuthentication();
@@ -88,7 +92,8 @@ namespace SportsStore
                     );
 
             });
-            SeedData.EnsurePopulated(app);
+            // Dont use these in production:
+            //SeedData.EnsurePopulated(app);
             IdentitySeedData.EnsurePopulated(app);
         }
     }
