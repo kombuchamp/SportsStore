@@ -48,10 +48,17 @@ namespace SportsStore.Controllers
         [HttpPost]
         public IActionResult Delete(int productId)
         {
-            Product deletedProduct = repository.DeleteProduct(productId);
-            if (deletedProduct != null)
+            try
             {
-                TempData["message"] = $"{deletedProduct.Name} was deleted";
+                Product deletedProduct = repository.DeleteProduct(productId);
+                if (deletedProduct != null)
+                {
+                    TempData["message"] = $"{deletedProduct.Name} was deleted";
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                TempData["message"] = e.Message;
             }
             return RedirectToAction("Index");
         }

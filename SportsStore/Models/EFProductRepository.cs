@@ -20,13 +20,22 @@ namespace SportsStore.Models
                 .FirstOrDefault(p => p.ProductID == productID);
             if (dbEntry != null)
             {
-                context.Products.Remove(dbEntry);
-                context.SaveChanges();
+                try
+                {
+                    // It may fail because if product is ordered FK won't allow to delete it
+                    context.Products.Remove(dbEntry);
+                    context.SaveChanges();
+                }
+                catch
+                {
+                    throw new InvalidOperationException("Product was ordered! Unable to delete");
+                }
+
             }
             return dbEntry;
         }
 
-        public async void SaveProduct(Product product)
+        public void SaveProduct(Product product)
         {
             if (product.ProductID == 0)
             {
@@ -44,7 +53,7 @@ namespace SportsStore.Models
                     dbEntry.Category = product.Category;
                 }
             }
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
     }
 }
