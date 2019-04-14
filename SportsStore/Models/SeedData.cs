@@ -10,11 +10,11 @@ namespace SportsStore.Models
 {
     public static class SeedData
     {
-        public static void EnsurePopulated(IApplicationBuilder app)
+        public static void EnsurePopulated(IServiceProvider services)
         {
-            ApplicationDbContext context = app.ApplicationServices
+            ApplicationDbContext context = services
                 .GetRequiredService<ApplicationDbContext>();
-            context.Database.Migrate();
+            //context.Database.Migrate(); // Automaticly applying pending migration could cause data loss. Delete this?
             if (!context.Products.Any())
             {
                 context.Products.AddRange(
