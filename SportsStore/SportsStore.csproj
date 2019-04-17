@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>Belousov K.</Authors>
+    <Company />
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
