@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SportsStore.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SportsStore.Controllers
 {
