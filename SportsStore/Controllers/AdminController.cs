@@ -100,7 +100,7 @@ namespace SportsStore.Controllers
                     UserName = userName
                 };
 
-                foreach(var validator in userManager.PasswordValidators)
+                foreach (var validator in userManager.PasswordValidators)
                 {
                     var validationResult = await validator.ValidateAsync(userManager, user, password);
                     if (!validationResult.Succeeded)
@@ -113,26 +113,26 @@ namespace SportsStore.Controllers
                     }
                 }
 
-                if (roles != null)
-                {
-                    var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
-                    IdentityResult addRolesResult = await userManager.AddToRolesAsync(user, rolesList);
-
-                    if (!addRolesResult.Succeeded)
-                    {
-                        foreach (IdentityError error in addRolesResult.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                        return View();
-                    }
-                }
-
                 IdentityResult result
                     = await userManager.CreateAsync(user, password);
 
                 if (result.Succeeded)
                 {
+                    // Assign roles here (cant do it before creating because in that case security stamp is not assigned)
+                    if (roles != null)
+                    {
+                        var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                        IdentityResult addRolesResult = await userManager.AddToRolesAsync(user, rolesList);
+
+                        if (!addRolesResult.Succeeded)
+                        {
+                            foreach (IdentityError error in addRolesResult.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            return View();
+                        }
+                    }
                     return RedirectToAction("Users");
                 }
                 else
@@ -199,6 +199,33 @@ namespace SportsStore.Controllers
                 ModelState.AddModelError("", "User Not Found");
             }
             return View(user);
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            IdentityUser user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                IdentityResult result = await userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Users");
+                }
+                else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "User Not Found");
+            }
+            return View("Users", userManager.Users);
         }
     }
 }
