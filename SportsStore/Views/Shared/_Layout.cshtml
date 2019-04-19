@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -9,10 +8,29 @@
     <title>Sports Store</title>
 </head>
 <body>
-    <div class="navbar bg-dark" role="navigation">
+    <div class="navbar bg-dark justify-content-between" role="navigation">
         <a class="navbar-brand text-white" href="#">SPORTS STORE</a>
-        <div class="col-4 text-right">
-            @await Component.InvokeAsync("CartSummary")
+        <div class="text-right">
+            <div class="">
+                @{
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        <a class="btn btn-sm btn-primary" asp-action="Login" asp-controller="Account">
+                            Log In
+                        </a>
+                    }
+                    else
+                    {
+                        <small class="text-white">@User.Identity.Name</small>
+                        <a class="btn btn-sm btn-primary" asp-action="Logout" asp-controller="Account">
+                            Log Out
+                        </a>
+                    }
+                }
+            </div>
+            <div class="">
+                @await Component.InvokeAsync("CartSummary")
+            </div>
         </div>
     </div>
     <div class="row m-1 p-1">
