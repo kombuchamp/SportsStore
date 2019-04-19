@@ -14,10 +14,12 @@ namespace SportsStore.Controllers
     {
         private IProductRepository repository;
         private UserManager<IdentityUser> userManager;
-        public AdminController(IProductRepository repository, UserManager<IdentityUser> userManager)
+        private RoleManager<IdentityRole> roleManager;
+        public AdminController(IProductRepository repository, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.repository = repository;
             this.userManager = userManager;
+            this.roleManager = roleManager;
         }
         public ViewResult Index() => View(repository.Products);
 
@@ -122,6 +124,12 @@ namespace SportsStore.Controllers
                     if (roles != null)
                     {
                         var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                        var validRolesList = roleManager.Roles.Select(r => r.ToString()).ToList();
+                        if (!rolesList.All(r => validRolesList.Contains(r)))
+                        {
+                            ModelState.AddModelError("", "User is created, but roles are not assigned (invalid roles in roles list)");
+                            return View();
+                        }
                         IdentityResult addRolesResult = await userManager.AddToRolesAsync(user, rolesList);
 
                         if (!addRolesResult.Succeeded)
@@ -186,6 +194,12 @@ namespace SportsStore.Controllers
 
                 // Update roles
                 var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                var validRolesList = roleManager.Roles.Select(r => r.ToString()).ToList();
+                if (!rolesList.All(r => validRolesList.Contains(r)))
+                {
+                    ModelState.AddModelError("", "Failed to assign roles - one or more roles do not exist");
+                    return View(user);
+                }
                 var currentRoles = await userManager.GetRolesAsync(user);
                 await userManager.RemoveFromRolesAsync(user, currentRoles);
                 var updateRolesResult = await userManager.AddToRolesAsync(user, rolesList);
