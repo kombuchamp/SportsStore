@@ -92,6 +92,14 @@ namespace SportsStore
                     );
 
             });
+            // Delete and create database everytime application is started
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                  .CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+            }
             // Dont use these in production:
             //SeedData.EnsurePopulated(app);
             IdentitySeedData.EnsurePopulated(app);

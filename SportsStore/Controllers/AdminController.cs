@@ -8,7 +8,7 @@ using SportsStore.Models;
 
 namespace SportsStore.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin")]
     public class AdminController : Controller
     {
         private IProductRepository repository;
