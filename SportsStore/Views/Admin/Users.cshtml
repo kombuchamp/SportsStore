@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityUser>
+﻿@model IEnumerable<AppUser>
 
 @{
     ViewData["Title"] = "Users";
@@ -25,7 +25,7 @@
                 <td>
                     <ul>
                         @{
-                            var userManager = (ViewBag.userManager as UserManager<IdentityUser>);
+                            var userManager = (ViewBag.userManager as UserManager<AppUser>);
                             var roles = await userManager.GetRolesAsync(user);
                             foreach (var role in roles)
                             {

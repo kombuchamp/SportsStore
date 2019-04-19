@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SportsStore.Models;
 using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers
@@ -9,10 +10,10 @@ namespace SportsStore.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private UserManager<IdentityUser> userManager;
-        private SignInManager<IdentityUser> signInManager;
-        public AccountController(UserManager<IdentityUser> userMgr, 
-            SignInManager<IdentityUser> signInMgr)
+        private UserManager<AppUser> userManager;
+        private SignInManager<AppUser> signInManager;
+        public AccountController(UserManager<AppUser> userMgr, 
+            SignInManager<AppUser> signInMgr)
         {
             userManager = userMgr;
             signInManager = signInMgr;
@@ -34,7 +35,7 @@ namespace SportsStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user =
+                AppUser user =
                     await userManager.FindByNameAsync(loginModel.Name);
                 if (user != null)
                 {

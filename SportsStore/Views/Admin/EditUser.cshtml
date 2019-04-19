@@ -1,9 +1,9 @@
-﻿@model IdentityUser
+﻿@model AppUser
 
 @{
     ViewData["Title"] = "EditUser";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var userManager = ViewBag.userManager as UserManager<IdentityUser>; // TODO: use @inject instead of viewbag
+    var userManager = ViewBag.userManager as UserManager<AppUser>; // TODO: use @inject instead of viewbag
     var roles = await userManager.GetRolesAsync(Model);
 }
 

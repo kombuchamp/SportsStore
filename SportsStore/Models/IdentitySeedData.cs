@@ -11,8 +11,8 @@ namespace SportsStore.Models
         private const string adminPassword = "Secret123$";
         public static async void EnsurePopulated(IApplicationBuilder app)
         {
-            UserManager<IdentityUser> userManager = app.ApplicationServices
-                .GetRequiredService<UserManager<IdentityUser>>();
+            UserManager<AppUser> userManager = app.ApplicationServices
+                .GetRequiredService<UserManager<AppUser>>();
             RoleManager<IdentityRole> roleManager = app.ApplicationServices
                 .GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -22,10 +22,10 @@ namespace SportsStore.Models
             await roleManager.CreateAsync(new IdentityRole { Name = "User" });
             //Task.WaitAll(superAdminTask, adminTask, userTask);
 
-            IdentityUser user = await userManager.FindByNameAsync(adminUser);
+            AppUser user = await userManager.FindByNameAsync(adminUser);
             if (user == null)
             {
-                user = new IdentityUser("Admin");
+                user = new AppUser("Admin");
                 await userManager.CreateAsync(user, adminPassword);
             }
             await userManager.AddToRoleAsync(user, "SuperAdmin");

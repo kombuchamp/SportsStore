@@ -13,9 +13,9 @@ namespace SportsStore.Controllers
     public class AdminController : Controller
     {
         private IProductRepository repository;
-        private UserManager<IdentityUser> userManager;
+        private UserManager<AppUser> userManager;
         private RoleManager<IdentityRole> roleManager;
-        public AdminController(IProductRepository repository, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminController(IProductRepository repository, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.repository = repository;
             this.userManager = userManager;
@@ -97,7 +97,7 @@ namespace SportsStore.Controllers
                     return View();
                 }
 
-                IdentityUser user = new IdentityUser
+                AppUser user = new AppUser
                 {
                     UserName = userName
                 };
@@ -158,7 +158,7 @@ namespace SportsStore.Controllers
         public async Task<IActionResult> EditUser(string id)
         {
             ViewBag.userManager = userManager;
-            IdentityUser user = await userManager.FindByIdAsync(id);
+            AppUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
                 return View(user);
@@ -174,7 +174,7 @@ namespace SportsStore.Controllers
         public async Task<IActionResult> EditUser(string id, string userName, string roles)
         {
             ViewBag.userManager = userManager;
-            IdentityUser user = await userManager.FindByIdAsync(id);
+            AppUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
                 // Update username
@@ -219,7 +219,7 @@ namespace SportsStore.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            IdentityUser user = await userManager.FindByIdAsync(id);
+            AppUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
                 IdentityResult result = await userManager.DeleteAsync(user);
