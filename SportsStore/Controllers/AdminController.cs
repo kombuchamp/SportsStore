@@ -78,5 +78,58 @@ namespace SportsStore.Controllers
             ViewBag.userManager = userManager;
             return View(userManager.Users);
         }
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            ViewBag.userManager = userManager;
+            IdentityUser user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string id, string userName, string roles)
+        {
+            ViewBag.userManager = userManager;
+            IdentityUser user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                // Update username
+                if(!string.IsNullOrEmpty(userName))
+                {
+                    user.UserName = userName;
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid username");
+                }
+                var updateUsernameResult = await userManager.UpdateAsync(user);
+                if (!updateUsernameResult.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to update username");
+                }
+
+                // Update roles
+                var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                var currentRoles = await userManager.GetRolesAsync(user);
+                await userManager.RemoveFromRolesAsync(user, currentRoles);
+                var updateRolesResult = await userManager.AddToRolesAsync(user, rolesList);
+                if(!updateRolesResult.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to assign roles");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "User Not Found");
+            }
+            return View(user);
+        }
     }
 }
