@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models;
 
 namespace SportsStore.Controllers
 {
-    [Authorize(Roles = "SuperAdmina")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class AdminController : Controller
     {
         private IProductRepository repository;
-        public AdminController(IProductRepository repository)
+        private UserManager<IdentityUser> userManager;
+        public AdminController(IProductRepository repository, UserManager<IdentityUser> userManager)
         {
             this.repository = repository;
+            this.userManager = userManager;
         }
         public ViewResult Index() => View(repository.Products);
 
@@ -68,6 +71,12 @@ namespace SportsStore.Controllers
         {
             SeedData.EnsurePopulated(HttpContext.RequestServices);
             return RedirectToAction(nameof(Index));
+        }
+        [Authorize(Roles = "SuperAdmin")]
+        public ActionResult Users()
+        {
+            ViewBag.userManager = userManager;
+            return View(userManager.Users);
         }
     }
 }
