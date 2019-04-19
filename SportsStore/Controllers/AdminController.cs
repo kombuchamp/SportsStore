@@ -72,12 +72,80 @@ namespace SportsStore.Controllers
             SeedData.EnsurePopulated(HttpContext.RequestServices);
             return RedirectToAction(nameof(Index));
         }
+
         [Authorize(Roles = "SuperAdmin")]
         public ActionResult Users()
         {
             ViewBag.userManager = userManager;
             return View(userManager.Users);
         }
+
+        [Authorize(Roles = "SuperAdmin")]
+        public ViewResult CreateUser() => View();
+
+        [Authorize(Roles = "SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(string userName, string password, string confirmPassword, string roles)
+        {
+            if (ModelState.IsValid) // Add ViewModel instead of string parametes
+            {
+                if (password != confirmPassword)
+                {
+                    ModelState.AddModelError("", "Passwords don't match");
+                    return View();
+                }
+
+                IdentityUser user = new IdentityUser
+                {
+                    UserName = userName
+                };
+
+                foreach(var validator in userManager.PasswordValidators)
+                {
+                    var validationResult = await validator.ValidateAsync(userManager, user, password);
+                    if (!validationResult.Succeeded)
+                    {
+                        foreach (IdentityError error in validationResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View();
+                    }
+                }
+
+                if (roles != null)
+                {
+                    var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                    IdentityResult addRolesResult = await userManager.AddToRolesAsync(user, rolesList);
+
+                    if (!addRolesResult.Succeeded)
+                    {
+                        foreach (IdentityError error in addRolesResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View();
+                    }
+                }
+
+                IdentityResult result
+                    = await userManager.CreateAsync(user, password);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Users");
+                }
+                else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View();
+        }
+
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -92,6 +160,7 @@ namespace SportsStore.Controllers
                 return RedirectToAction("Index");
             }
         }
+
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         public async Task<IActionResult> EditUser(string id, string userName, string roles)
@@ -101,7 +170,7 @@ namespace SportsStore.Controllers
             if (user != null)
             {
                 // Update username
-                if(!string.IsNullOrEmpty(userName))
+                if (!string.IsNullOrEmpty(userName))
                 {
                     user.UserName = userName;
                 }
@@ -120,7 +189,7 @@ namespace SportsStore.Controllers
                 var currentRoles = await userManager.GetRolesAsync(user);
                 await userManager.RemoveFromRolesAsync(user, currentRoles);
                 var updateRolesResult = await userManager.AddToRolesAsync(user, rolesList);
-                if(!updateRolesResult.Succeeded)
+                if (!updateRolesResult.Succeeded)
                 {
                     ModelState.AddModelError("", "Failed to assign roles");
                 }

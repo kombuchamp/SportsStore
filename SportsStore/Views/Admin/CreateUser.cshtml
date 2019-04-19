@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewData["Title"] = "CreateUser";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="bg-primary m-1 p-1 text-white"><h4>Create User</h4></div>
+<div asp-validation-summary=" All" class="text-danger"></div>
+<form asp-action="CreateUser" method="post">
+    <div class="form-group">
+        <label for="userName">Username</label>
+        <input name="userName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input name="password" type="password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="confirmPassword">Confirm password</label>
+        <input name="confirmPassword" type="password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="roles">Roles</label>
+        <input name="roles" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
