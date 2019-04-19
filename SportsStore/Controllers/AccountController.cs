@@ -58,5 +58,11 @@ namespace SportsStore.Controllers
             await signInManager.SignOutAsync();
             return Redirect(returnUrl);
         }
+
+        [AllowAnonymous]
+        public ActionResult AccessDenied(string returnUrl)
+        {
+            return View();
+        }
     }
 }
