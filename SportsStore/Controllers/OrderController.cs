@@ -40,6 +40,7 @@ namespace SportsStore.Controllers
             return RedirectToAction(nameof(List));
         }
 
+        [Authorize]
         public ViewResult Checkout() => View(new Order());
 
         [HttpPost]
