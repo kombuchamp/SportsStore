@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace SportsStore.Models
         public AppUser(string userName) : base(userName)
         {
         }
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Enter positive amount of money")]
         public decimal Money { get; set; }
     }
 }

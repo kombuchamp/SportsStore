@@ -25,7 +25,10 @@ namespace SportsStore.Models
             AppUser user = await userManager.FindByNameAsync(adminUser);
             if (user == null)
             {
-                user = new AppUser("Admin");
+                user = new AppUser("Admin")
+                {
+                    Money = 999999
+                };
                 await userManager.CreateAsync(user, adminPassword);
             }
             await userManager.AddToRoleAsync(user, "SuperAdmin");
