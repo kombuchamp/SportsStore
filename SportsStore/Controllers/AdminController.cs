@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -171,13 +173,13 @@ namespace SportsStore.Controllers
 
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
-        public async Task<IActionResult> EditUser(string id, string userName, string roles)
+        public async Task<IActionResult> EditUser(string id, string userName, string money, string roles)
         {
             ViewBag.userManager = userManager;
             AppUser user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
-                // Update username
+                // Change username
                 if (!string.IsNullOrEmpty(userName))
                 {
                     user.UserName = userName;
@@ -186,13 +188,32 @@ namespace SportsStore.Controllers
                 {
                     ModelState.AddModelError("", "Invalid username");
                 }
-                var updateUsernameResult = await userManager.UpdateAsync(user);
-                if (!updateUsernameResult.Succeeded)
+                // Change amount of money
+                // Parse the hell out of it:
+                if (decimal.TryParse(money.Replace(",", "."),
+                    NumberStyles.Currency,
+                    CultureInfo.InvariantCulture,
+                    out decimal newMoney) 
+                    && newMoney > 0) // TODO: DataAnnotations dont work here, figure out why
                 {
-                    ModelState.AddModelError("", "Failed to update username");
+                    user.Money = newMoney;
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid money amount entered");
                 }
 
-                // Update roles
+                // Update user
+                if (ModelState.IsValid)
+                {
+                    var updateUsernameResult = await userManager.UpdateAsync(user);
+                    if (!updateUsernameResult.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Failed to update user");
+                    }
+                }
+
+                // Update roles separately
                 var rolesList = roles?.Replace(" ", string.Empty)?.Split(",")?.ToList() ?? new List<string>();
                 var validRolesList = roleManager.Roles.Select(r => r.ToString()).ToList();
                 if (!rolesList.All(r => validRolesList.Contains(r)))
@@ -212,8 +233,8 @@ namespace SportsStore.Controllers
             {
                 ModelState.AddModelError("", "User Not Found");
             }
-            return ModelState.IsValid 
-                ? RedirectToAction("Users") as IActionResult 
+            return ModelState.IsValid
+                ? RedirectToAction("Users") as IActionResult
                 : View(user);
         }
 

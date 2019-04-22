@@ -16,7 +16,7 @@ namespace SportsStore.Models
         {
         }
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Enter positive amount of money")]
+        [Range(0.0, double.MaxValue, ErrorMessage = "Enter positive amount of money")]
         public decimal Money { get; set; }
     }
 }
