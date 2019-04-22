@@ -193,7 +193,7 @@ namespace SportsStore.Controllers
                 }
 
                 // Update roles
-                var rolesList = roles.Replace(" ", string.Empty).Split(",").ToList();
+                var rolesList = roles?.Replace(" ", string.Empty)?.Split(",")?.ToList() ?? new List<string>();
                 var validRolesList = roleManager.Roles.Select(r => r.ToString()).ToList();
                 if (!rolesList.All(r => validRolesList.Contains(r)))
                 {
@@ -212,7 +212,9 @@ namespace SportsStore.Controllers
             {
                 ModelState.AddModelError("", "User Not Found");
             }
-            return View(user);
+            return ModelState.IsValid 
+                ? RedirectToAction("Users") as IActionResult 
+                : View(user);
         }
 
         [Authorize(Roles = "SuperAdmin")]
