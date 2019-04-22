@@ -19,19 +19,28 @@ namespace SportsStore.Models
             // Create roles
             await roleManager.CreateAsync(new IdentityRole { Name = "SuperAdmin" });
             await roleManager.CreateAsync(new IdentityRole { Name = "Admin" });
-            await roleManager.CreateAsync(new IdentityRole { Name = "User" });
             //Task.WaitAll(superAdminTask, adminTask, userTask);
 
-            AppUser user = await userManager.FindByNameAsync(adminUser);
-            if (user == null)
+            AppUser admin = await userManager.FindByNameAsync(adminUser);
+            if (admin == null)
             {
-                user = new AppUser("Admin")
+                admin = new AppUser(adminUser)
                 {
                     Money = 999999
                 };
+                await userManager.CreateAsync(admin, adminPassword);
+            }
+            await userManager.AddToRoleAsync(admin, "SuperAdmin");
+
+            AppUser user = await userManager.FindByNameAsync("User");
+            if (user == null)
+            {
+                user = new AppUser("User")
+                {
+                    Money = 300
+                };
                 await userManager.CreateAsync(user, adminPassword);
             }
-            await userManager.AddToRoleAsync(user, "SuperAdmin");
         }
     }
 }

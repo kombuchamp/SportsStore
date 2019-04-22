@@ -101,7 +101,7 @@ namespace SportsStore
                 dbContext.Database.EnsureCreated();
             }
             // Dont use these in production:
-            //SeedData.EnsurePopulated(app);
+            SeedData.EnsurePopulated(app.ApplicationServices);
             IdentitySeedData.EnsurePopulated(app);
         }
     }
