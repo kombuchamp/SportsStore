@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@inject UserManager<AppUser> UserManager
+
+@{ 
+    AppUser UserInfo = null;
+    if (User.Identity.Name != null)
+    {
+        UserInfo = await UserManager.FindByNameAsync(User.Identity.Name);
+    }
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -21,7 +31,7 @@
                     }
                     else
                     {
-                        <small class="text-white">@User.Identity.Name</small>
+                        <small class="text-white">@UserInfo.UserName @UserInfo.Money.ToString("c")</small>
                         <a class="btn btn-sm btn-primary" asp-action="Logout" asp-controller="Account">
                             Log Out
                         </a>
